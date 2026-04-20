@@ -57,7 +57,7 @@ export async function submitFunnel(raw: unknown): Promise<SubmitResult> {
         from: FROM_EMAIL,
         to: data.contact.email,
         replyTo: OWNER_EMAIL,
-        subject: "Deine Anfrage bei Tikiz ist angekommen",
+        subject: `Deine Anfrage ist angekommen, ${data.contact.name.split(" ")[0] || data.contact.name} — so geht's weiter`,
         html: renderCustomerEmail(data),
       }),
     ]);
@@ -124,37 +124,155 @@ function renderOwnerEmail(data: FunnelSubmission): string {
 }
 
 function renderCustomerEmail(data: FunnelSubmission): string {
-  return wrap(`
-    <h1 style="margin:0 0 16px;font-size:22px;color:#111827;">
-      Hallo ${escapeHtml(data.contact.name.split(" ")[0] || data.contact.name)},
-    </h1>
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.6;">
-      danke für deine Anfrage — sie ist bei mir angekommen. Ich schaue mir deine
-      Antworten in Ruhe an und melde mich <strong>innerhalb von 24 Stunden</strong>
-      persönlich bei dir mit einem ersten Konzept und einer Einschätzung zum Aufwand.
-    </p>
-    <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.6;">
-      Falls du in der Zwischenzeit noch etwas ergänzen möchtest — einfach auf diese
-      E-Mail antworten. Oder ruf mich gerne direkt an:
-      <a style="color:#1fa7ff;" href="tel:${COMPANY.mobile.replace(/\s/g, "")}">${escapeHtml(COMPANY.mobile)}</a>.
-    </p>
-    <p style="margin:0 0 24px;color:#374151;font-size:15px;line-height:1.6;">
-      Bis bald,<br/>
-      Özgür Tikiz<br/>
-      <a style="color:#1fa7ff;" href="${SITE.url}">tikiz.dev</a>
-    </p>
-    <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;" />
-    <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.6;">
-      ${escapeHtml(COMPANY.legalName)} · Inhaber ${escapeHtml(COMPANY.owner)}<br/>
-      ${escapeHtml(COMPANY.street)}, ${escapeHtml(COMPANY.zip)} ${escapeHtml(COMPANY.city)}<br/>
-      USt-ID: ${escapeHtml(COMPANY.vatId)}
-    </p>
-  `);
+  const firstName = data.contact.name.split(" ")[0] || data.contact.name;
+  const phoneHref = COMPANY.mobile.replace(/\s/g, "");
+
+  const summary: [string, string][] = [];
+  if (data.projectType) summary.push(["Projekttyp", labelFor("projectType", data.projectType)]);
+  if (data.scope) summary.push(["Umfang", labelFor("scope", data.scope)]);
+  if (data.timeline) summary.push(["Zeitrahmen", labelFor("timeline", data.timeline)]);
+  if (data.budget && data.budget !== "unsure") summary.push(["Budget", labelFor("budget", data.budget)]);
+
+  const summaryRows = summary
+    .map(
+      ([k, v]) => `
+      <tr>
+        <td style="padding:10px 16px 10px 0;color:#6b7280;font-size:13px;width:140px;vertical-align:top;">${escapeHtml(k)}</td>
+        <td style="padding:10px 0;color:#111827;font-size:14px;font-weight:500;">${escapeHtml(v)}</td>
+      </tr>`
+    )
+    .join("");
+
+  const inner = `
+    <!-- Branded header -->
+    <div style="background:linear-gradient(135deg,#1fa7ff 0%,#0e7fcc 100%);padding:40px 32px;text-align:center;">
+      <div style="display:inline-block;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:28px;font-weight:600;color:#ffffff;letter-spacing:-0.02em;">
+        Tikiz<span style="color:#ff9a46;">.</span>
+      </div>
+      <div style="margin-top:12px;color:rgba(255,255,255,0.85);font-size:14px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;">
+        Deine Anfrage ist angekommen
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div style="padding:40px 32px 32px;">
+      <h1 style="margin:0 0 20px;font-size:24px;color:#111827;font-weight:600;letter-spacing:-0.01em;">
+        Hallo ${escapeHtml(firstName)},
+      </h1>
+
+      <p style="margin:0 0 16px;color:#374151;font-size:16px;line-height:1.65;">
+        danke, dass du dir die Zeit genommen hast, mir deine Vorstellungen zu schildern —
+        richtig klasse! Ich habe deine Anfrage bereits erhalten und schaue sie mir jetzt in
+        Ruhe an.
+      </p>
+
+      <p style="margin:0 0 32px;color:#374151;font-size:16px;line-height:1.65;">
+        <strong style="color:#111827;">Innerhalb der nächsten 24 Stunden</strong> höre
+        ich persönlich von dir — mit einer ersten Einschätzung und einem konkreten
+        Vorschlag, wie wir dein Projekt angehen können.
+      </p>
+
+      ${
+        summaryRows
+          ? `
+      <!-- Summary box -->
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:20px 24px;margin:0 0 32px;">
+        <div style="color:#6b7280;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">
+          Das habe ich von dir
+        </div>
+        <table style="width:100%;border-collapse:collapse;">${summaryRows}</table>
+      </div>`
+          : ""
+      }
+
+      <!-- Timeline -->
+      <div style="margin:0 0 32px;">
+        <div style="color:#6b7280;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;">
+          So geht es weiter
+        </div>
+
+        <table style="width:100%;border-collapse:collapse;">
+          <tr>
+            <td style="width:32px;vertical-align:top;padding:0 12px 16px 0;">
+              <div style="width:28px;height:28px;border-radius:999px;background:#1fa7ff;color:#ffffff;text-align:center;line-height:28px;font-size:13px;font-weight:600;">1</div>
+            </td>
+            <td style="padding:0 0 16px;vertical-align:top;">
+              <div style="color:#111827;font-size:15px;font-weight:600;margin-bottom:2px;">Ich sichte deine Antworten</div>
+              <div style="color:#6b7280;font-size:14px;line-height:1.5;">Heute oder spätestens morgen früh</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="width:32px;vertical-align:top;padding:0 12px 16px 0;">
+              <div style="width:28px;height:28px;border-radius:999px;background:#1fa7ff;color:#ffffff;text-align:center;line-height:28px;font-size:13px;font-weight:600;">2</div>
+            </td>
+            <td style="padding:0 0 16px;vertical-align:top;">
+              <div style="color:#111827;font-size:15px;font-weight:600;margin-bottom:2px;">Persönliche Antwort mit Konzept</div>
+              <div style="color:#6b7280;font-size:14px;line-height:1.5;">Innerhalb von 24 Stunden per Mail</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="width:32px;vertical-align:top;padding:0 12px 0 0;">
+              <div style="width:28px;height:28px;border-radius:999px;background:#1fa7ff;color:#ffffff;text-align:center;line-height:28px;font-size:13px;font-weight:600;">3</div>
+            </td>
+            <td style="vertical-align:top;">
+              <div style="color:#111827;font-size:15px;font-weight:600;margin-bottom:2px;">Kennenlern-Call (kostenlos)</div>
+              <div style="color:#6b7280;font-size:14px;line-height:1.5;">30 Min. per Video oder Telefon — falls du willst</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Contact CTA -->
+      <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;padding:24px;margin:0 0 32px;">
+        <div style="color:#111827;font-size:15px;font-weight:600;margin-bottom:6px;">
+          Fällt dir noch etwas ein?
+        </div>
+        <div style="color:#374151;font-size:14px;line-height:1.6;">
+          Du kannst einfach auf diese E-Mail antworten, oder mich direkt anrufen:<br/>
+          <a style="color:#0e7fcc;font-weight:600;text-decoration:none;" href="tel:${phoneHref}">${escapeHtml(COMPANY.mobile)}</a>
+        </div>
+      </div>
+
+      <p style="margin:0 0 8px;color:#374151;font-size:16px;line-height:1.65;">
+        Bis bald,
+      </p>
+      <p style="margin:0 0 4px;color:#111827;font-size:16px;font-weight:600;">
+        Özgür Tikiz
+      </p>
+      <p style="margin:0 0 32px;color:#6b7280;font-size:14px;">
+        Freelance Web Developer · <a style="color:#0e7fcc;text-decoration:none;" href="${SITE.url}">tikiz.dev</a>
+      </p>
+
+      <!-- Soft CTA -->
+      <div style="border-top:1px solid #e5e7eb;padding-top:24px;margin-bottom:0;">
+        <a href="${SITE.url}/work" style="display:inline-block;color:#0e7fcc;font-size:14px;font-weight:600;text-decoration:none;">
+          → Aktuelle Projekte ansehen
+        </a>
+      </div>
+    </div>
+
+    <!-- Legal footer -->
+    <div style="background:#f9fafb;padding:20px 32px;border-top:1px solid #e5e7eb;">
+      <p style="margin:0;color:#9ca3af;font-size:11px;line-height:1.7;">
+        ${escapeHtml(COMPANY.legalName)} · Inhaber ${escapeHtml(COMPANY.owner)} ·
+        ${escapeHtml(COMPANY.street)}, ${escapeHtml(COMPANY.zip)} ${escapeHtml(COMPANY.city)} ·
+        USt-ID ${escapeHtml(COMPANY.vatId)}
+      </p>
+    </div>
+  `;
+
+  return wrapBranded(inner);
 }
 
 function wrap(inner: string): string {
   return `<!doctype html><html><body style="margin:0;padding:24px;background:#f9fafb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
     <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;padding:32px;">${inner}</div>
+  </body></html>`;
+}
+
+function wrapBranded(inner: string): string {
+  return `<!doctype html><html><body style="margin:0;padding:24px;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+    <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px -8px rgba(0,0,0,0.08);">${inner}</div>
   </body></html>`;
 }
 
