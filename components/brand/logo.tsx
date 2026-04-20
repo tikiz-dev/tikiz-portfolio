@@ -14,20 +14,44 @@ export function Logo({
   if (compact) {
     return (
       <svg
-        viewBox="0 0 32 32"
+        viewBox="0 0 64 64"
         xmlns="http://www.w3.org/2000/svg"
-        className={cn("text-[color:var(--color-text)]", className)}
+        className={cn(className)}
         aria-label="Tikiz"
       >
         <defs>
-          <linearGradient id="tx-dot" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--color-brand-400)" />
-            <stop offset="100%" stopColor="var(--color-glow-500)" />
+          <linearGradient id="tx-bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#131419" />
+            <stop offset="100%" stopColor="#05060a" />
+          </linearGradient>
+          <linearGradient id="tx-dot-sq" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#48c5ff" />
+            <stop offset="100%" stopColor="#ff9a46" />
           </linearGradient>
         </defs>
-        <rect x="1" y="1" width="30" height="30" rx="8" fill="none" stroke="currentColor" strokeOpacity="0.14" />
-        <path d="M8 10h16M16 10v14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-        <circle cx="24" cy="22" r="2.6" fill="url(#tx-dot)" />
+        {/* Background */}
+        <rect width="64" height="64" rx="14" fill="url(#tx-bg)" />
+        {/* Subtle inner border for depth */}
+        <rect
+          x="0.5"
+          y="0.5"
+          width="63"
+          height="63"
+          rx="13.5"
+          fill="none"
+          stroke="#ffffff"
+          strokeOpacity="0.08"
+        />
+        {/* T — crossbar + stem */}
+        <path
+          d="M18 22h28M32 22v26"
+          stroke="#f5f5f6"
+          strokeWidth="5"
+          strokeLinecap="round"
+          fill="none"
+        />
+        {/* Accent gradient dot */}
+        <circle cx="47" cy="45" r="5" fill="url(#tx-dot-sq)" />
       </svg>
     );
   }
