@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Renders the Tikiz square mark SVGs to PNG at multiple sizes.
+ * Renders the Tikiz brand SVGs to PNG at multiple sizes.
  *
  * Usage: node scripts/export-brand-pngs.mjs
  *
- * Writes to:
- *   public/brand/tikiz-mark-{size}.png
- *   public/brand/tikiz-mark-light-{size}.png
+ * Square marks (viewBox 64×64) are exported at 16 – 1024 px.
+ * Wordmarks (viewBox 148×32 → 4.625:1) are exported at widths
+ * 256 – 2048 px. Height is kept proportional.
  */
 
 import { chromium } from "playwright";
@@ -18,11 +18,36 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const BRAND_DIR = join(ROOT, "public", "brand");
 
-const SIZES = [16, 32, 64, 128, 180, 256, 512, 1024];
-
+/**
+ * Each variant lists its master SVG and the target pixel sizes.
+ * For square marks `size` is width=height; for wordmarks it's width
+ * and the height is derived from the SVG's aspect ratio.
+ */
 const VARIANTS = [
-  { name: "tikiz-mark", file: "tikiz-mark.svg" },
-  { name: "tikiz-mark-light", file: "tikiz-mark-light.svg" },
+  {
+    name: "tikiz-mark",
+    file: "tikiz-mark.svg",
+    aspect: 1, // square
+    sizes: [16, 32, 64, 128, 180, 256, 512, 1024],
+  },
+  {
+    name: "tikiz-mark-light",
+    file: "tikiz-mark-light.svg",
+    aspect: 1,
+    sizes: [16, 32, 64, 128, 180, 256, 512, 1024],
+  },
+  {
+    name: "tikiz-wordmark",
+    file: "tikiz-wordmark.svg",
+    aspect: 148 / 32, // ≈ 4.625
+    sizes: [256, 512, 1024, 1600, 2048],
+  },
+  {
+    name: "tikiz-wordmark-light",
+    file: "tikiz-wordmark-light.svg",
+    aspect: 148 / 32,
+    sizes: [256, 512, 1024, 1600, 2048],
+  },
 ];
 
 async function main() {
@@ -31,15 +56,17 @@ async function main() {
     for (const variant of VARIANTS) {
       const svg = readFileSync(join(BRAND_DIR, variant.file), "utf8");
 
-      for (const size of SIZES) {
+      for (const width of variant.sizes) {
+        const height = Math.round(width / variant.aspect);
+
         const html = `<!doctype html><html><head><style>
           html,body { margin:0; padding:0; background:transparent; }
-          .wrap { width:${size}px; height:${size}px; }
+          .wrap { width:${width}px; height:${height}px; }
           .wrap svg { width:100%; height:100%; display:block; }
         </style></head><body><div class="wrap">${svg}</div></body></html>`;
 
         const page = await browser.newPage({
-          viewport: { width: size, height: size },
+          viewport: { width, height },
           deviceScaleFactor: 1,
         });
         await page.setContent(html);
@@ -47,9 +74,9 @@ async function main() {
           omitBackground: true,
           type: "png",
         });
-        const out = join(BRAND_DIR, `${variant.name}-${size}.png`);
+        const out = join(BRAND_DIR, `${variant.name}-${width}.png`);
         writeFileSync(out, buf);
-        console.log(`✓ ${variant.name}-${size}.png`);
+        console.log(`✓ ${variant.name}-${width}.png (${width}×${height})`);
         await page.close();
       }
     }

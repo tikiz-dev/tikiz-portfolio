@@ -1,41 +1,67 @@
 # Tikiz Brand Assets
 
-Quadratische Logo-Marke in zwei Varianten, für alle Einsatzbereiche außerhalb der Website.
+Alle Logo-Dateien für Einsatz außerhalb der Website. Zwei Formate
+(quadratische Marke + länglicher Wordmark), jeweils in einer
+Dunkel- und einer Hell-Variante.
 
 ## Verzeichnis
 
 ```
 public/brand/
-├── tikiz-mark.svg            ← Master (dunkel)
-├── tikiz-mark-light.svg      ← Master (hell)
-├── tikiz-mark-{size}.png     ← Exports dunkel (16 – 1024 px)
-└── tikiz-mark-light-{size}.png ← Exports hell
+├── tikiz-mark.svg            ← Quadrat, dunkel (Master)
+├── tikiz-mark-light.svg      ← Quadrat, hell
+├── tikiz-mark-{size}.png     ← 16, 32, 64, 128, 180, 256, 512, 1024
+├── tikiz-mark-light-{size}.png
+│
+├── tikiz-wordmark.svg        ← Länglich "Tikiz.", dunkel (Master)
+├── tikiz-wordmark-light.svg  ← Länglich, hell
+├── tikiz-wordmark-{width}.png    ← 256, 512, 1024, 1600, 2048 (Breite)
+└── tikiz-wordmark-light-{width}.png
 ```
 
-Alle PNGs sind aus der SVG generiert — Qualität ist bei jeder Größe scharf.
+**Varianten-Wahl:**
+- **Dunkel** (helle Schrift) → für dunkle Hintergründe
+- **Hell** (dunkle Schrift) → für helle Hintergründe (Briefpapier, weiße Slides)
 
-## Welche Datei für was?
+## Quick Cheatsheet — welche Datei wofür
 
-| Einsatz | Empfehlung |
+### Quadratische Marke (Avatar / Icon)
+
+| Einsatz | Datei |
 |---|---|
-| Favicon auf Website | wird automatisch aus `app/icon.svg` geliefert |
-| GitHub / GitLab Avatar | `tikiz-mark-512.png` (GitHub empfiehlt 500+ px) |
-| LinkedIn Profil | `tikiz-mark-1024.png` (LinkedIn skaliert auf 400×400) |
-| Upwork / Malt / Contra | `tikiz-mark-512.png` oder `-1024.png` |
+| Favicon (Website) | automatisch aus `app/icon.svg` |
+| iOS Homescreen | automatisch aus `app/apple-icon.tsx` |
+| GitHub Avatar | `tikiz-mark-512.png` |
+| LinkedIn Profilbild | `tikiz-mark-1024.png` |
+| Upwork / Malt / Contra | `tikiz-mark-512.png` |
 | Instagram / X / Bluesky | `tikiz-mark-1024.png` |
-| Visitenkarte / Print | `tikiz-mark.svg` (vektorbasiert, unbegrenzt skalierbar) |
-| Briefpapier / helle Hintergründe | `tikiz-mark-light-1024.png` |
-| iOS Homescreen | wird aus `app/apple-icon.tsx` geliefert |
 | E-Mail-Signatur | `tikiz-mark-64.png` oder `-128.png` |
+| Visitenkarte (Rückseite) | `tikiz-mark.svg` |
 
-**Faustregel:** SVG wenn möglich, PNG wenn SVG nicht unterstützt wird. PNG-Größe doppelt so hoch wie tatsächlich benötigt (Retina-Displays).
+### Wordmark (Header / Banner / Print)
+
+| Einsatz | Datei |
+|---|---|
+| E-Mail-Signatur Wordmark | `tikiz-wordmark-512.png` |
+| Social-Media-Banner (Cover) | `tikiz-wordmark-2048.png` |
+| Briefkopf / Rechnungsvorlage | `tikiz-wordmark-light-1024.png` |
+| Slide-Master / Präsentation | `tikiz-wordmark-1600.png` |
+| Angebotsunterlagen PDF | `tikiz-wordmark.svg` (skaliert) |
+| Druckvorlage (Flyer, Visitenkarte) | `tikiz-wordmark.svg` |
+
+**Faustregel:** SVG wann immer möglich (vektorbasiert, beliebig skalierbar).
+PNG nur, wenn SVG nicht unterstützt wird. Wähle PNG mit **doppelter
+Zielgröße** (Retina-Displays, z. B. ein 256-Breite-Slot bekommt die 512-PNG).
 
 ## Neue Größe generieren
 
-Wenn eine spezifische Größe fehlt, in `scripts/export-brand-pngs.mjs` das `SIZES`-Array erweitern und ausführen:
+Wenn eine spezifische Größe fehlt, in `scripts/export-brand-pngs.mjs`
+das `sizes`-Array der passenden Variante erweitern und ausführen:
 
 ```bash
 node scripts/export-brand-pngs.mjs
 ```
 
-Die PNGs werden aus den SVG-Master-Dateien regeneriert — nie die PNGs direkt bearbeiten.
+Die PNGs werden aus den SVG-Master-Dateien regeneriert — **niemals die
+PNGs direkt bearbeiten**, die Änderung wäre beim nächsten Export weg.
+Nur die `.svg`-Dateien sind Master.
