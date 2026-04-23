@@ -10,6 +10,7 @@ import { Logo } from "@/components/brand/logo";
 
 const NAV = [
   { label: "Projekte", href: "/work" },
+  { label: "Pakete", href: "/pakete" },
   { label: "Services", href: "/#services" },
   { label: "Über mich", href: "/#about" },
 ];
