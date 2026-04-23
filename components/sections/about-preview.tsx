@@ -25,19 +25,19 @@ export function AboutPreview() {
           <ScrollReveal>
             <p className="eyebrow mb-4">Über mich</p>
             <h2 className="display-2 mb-6">
-              Weserbergländer mit{" "}
-              <span className="text-gradient-warm">Hang zu sauberem Code</span>.
+              Unternehmer, der seinen{" "}
+              <span className="text-gradient-warm">Code selbst schreibt</span>.
             </h2>
             <div className="space-y-5 text-lg text-[color:var(--color-text-muted)] leading-relaxed">
               <p>
-                Ich komme aus der Dienstleistungsbranche — eigene
-                Gebäudereinigungsfirma mit Kunden im Weserbergland. Als es
-                darum ging, unsere eigene Web-Präsenz zu modernisieren, habe ich
-                das Projekt selbst in die Hand genommen.
+                Ich bin Inhaber von Weserbergland Dienstleistungen — einer
+                Gebäudereinigungsfirma, die ich von Grund auf aufgebaut habe.
+                Kundenakquise, Prozesse, Qualitätskontrolle — alles eigene
+                Arbeit, alles hart erlernt.
               </p>
               <p>
-                Seitdem baue ich mit derselben Sorgfalt Websites und Web-Apps
-                für andere. Mit{" "}
+                Parallel dazu entwickle ich Software, inzwischen hauptberuflich
+                als Freelancer. Mit{" "}
                 <span className="text-[color:var(--color-text)]">
                   Next.js&nbsp;16
                 </span>

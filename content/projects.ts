@@ -51,13 +51,13 @@ export const PROJECTS: Project[] = [
     tagline: "Vom WordPress-Relikt zur performanten Markenseite.",
     taglineEn: "From WordPress relic to performant brand site.",
     description:
-      "Eigene Gebäudereinigungsfirma — komplette Neuentwicklung der Firmen-Website. " +
-      "Ablösung des alten WordPress-Systems durch einen modernen Next.js-16-Stack mit " +
-      "Fokus auf Core Web Vitals, lokale SEO und klare Lead-Generierung.",
+      "Meine eigene Firma — eine Gebäudereinigung, die ich von Grund auf aufgebaut habe. " +
+      "Relaunch der Website: Ablösung des alten WordPress-Systems durch einen modernen " +
+      "Next.js-16-Stack mit Fokus auf Core Web Vitals, lokale SEO und klare Lead-Generierung.",
     descriptionEn:
-      "My own cleaning-services company — complete rebuild of the corporate website. " +
-      "Replaces the legacy WordPress install with a modern Next.js 16 stack, focused " +
-      "on Core Web Vitals, local SEO and clear lead generation.",
+      "My own company — a cleaning-services business I built from the ground up. " +
+      "Website relaunch: replacing the legacy WordPress install with a modern Next.js 16 " +
+      "stack, focused on Core Web Vitals, local SEO and clear lead generation.",
     year: 2026,
     role: "Konzept, Design & Entwicklung",
     roleEn: "Concept, design & development",

@@ -21,7 +21,7 @@ export function Footer() {
           <div className="space-y-5">
             <Logo className="h-7 w-auto" />
             <p className="max-w-sm text-sm text-[color:var(--color-text-muted)]">
-              Freelance-Webentwicklung aus dem Weserbergland. Moderne
+              Freelance-Webentwicklung mit Sitz in Hameln. Moderne
               Marken-Websites und Web-Apps mit Next.js, TypeScript und
               durchdachter Typografie.
             </p>
