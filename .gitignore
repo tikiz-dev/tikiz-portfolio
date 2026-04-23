@@ -42,3 +42,10 @@ next-env.d.ts
 
 # Claude Code local config / settings (never commit)
 .claude/
+
+# Client-specific work — contains PII, private correspondence, offers.
+# Must never land in a public repo. Workflow templates and generic
+# process docs at docs/*.md are fine; anything under docs/clients/ is not.
+docs/clients/
+docs/*.pdf
+
